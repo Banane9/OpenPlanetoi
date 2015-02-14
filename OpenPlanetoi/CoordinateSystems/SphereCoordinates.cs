@@ -28,12 +28,22 @@ namespace OpenPlanetoi.CoordinateSystems
         /// <summary>
         /// Creates a new instance of the <see cref="SphereCoordinates"/> struct with the given positions.
         /// </summary>
-        /// <param name="r">The radius of the Sphere (Euclidian Distance in Carteesian Space).</param>
-        /// <param name="θ">The polar angle (rotation away from pointing straight up).</param>
-        /// <param name="ϕ">The azimuthal angle (rotation away from pointing straight to the front).</param>
+        /// <param name="r">The radius of the Sphere (Euclidian Distance in Carteesian Space). Will be made positive.</param>
+        /// <param name="θ">The polar angle (rotation away from pointing straight up). Will be made to fit into [0, Pi].</param>
+        /// <param name="ϕ">The azimuthal angle (rotation away from pointing straight to the front). Will be made to fit with any changes to the polar angle and to fit into [0, 2Pi].</param>
         public SphereCoordinates(double r, double θ, double ϕ)
         {
             R = Math.Abs(r);
+
+            ϕ += ((int)(θ / (2 * Math.PI))) != 0 && ((θ > 0 && ((int)(θ / (2 * Math.PI))) % 2 == 0) || (θ < 0 && ((int)(θ / (2 * Math.PI))) % 2 != 0)) ? Math.PI : 0;
+
+            var twoPiLimit = θ % (2 * Math.PI);
+            θ = Math.Abs(θ % Math.PI == 0 && twoPiLimit != 0 ? Math.PI :
+                (twoPiLimit < -Math.PI ? twoPiLimit + 2 * Math.PI :
+                        (twoPiLimit > Math.PI ? 2 * Math.PI - twoPiLimit : twoPiLimit)) % Math.PI);
+
+            ϕ = ϕ % (2 * Math.PI);
+            ϕ += ϕ < 0 ? Math.PI : 0;
 
             this.θ = θ;
             this.ϕ = ϕ;
