@@ -1,14 +1,15 @@
-﻿using System;
+﻿using OpenPlanetoi.CoordinateSystems.Cartesian;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace OpenPlanetoi.CoordinateSystems
+namespace OpenPlanetoi.CoordinateSystems.Spherical
 {
     /// <summary>
     /// Represents a point on a Sphere centered at the Cartesian Point (0/0/0).
     /// </summary>
-    public struct SphereCoordinates
+    public struct SphereCoordinate
     {
         /// <summary>
         /// The azimuthal angle (rotation away from pointing straight to the front).
@@ -26,12 +27,12 @@ namespace OpenPlanetoi.CoordinateSystems
         public readonly double θ;
 
         /// <summary>
-        /// Creates a new instance of the <see cref="SphereCoordinates"/> struct with the given positions.
+        /// Creates a new instance of the <see cref="SphereCoordinate"/> struct with the given positions.
         /// </summary>
         /// <param name="r">The radius of the Sphere (Euclidian Distance in Carteesian Space). Will be made positive.</param>
         /// <param name="θ">The polar angle (rotation away from pointing straight up). Will be made to fit into [0, Pi].</param>
         /// <param name="ϕ">The azimuthal angle (rotation away from pointing straight to the front). Will be made to fit with any changes to the polar angle and to fit into [0, 2Pi].</param>
-        public SphereCoordinates(double r, double θ, double ϕ)
+        public SphereCoordinate(double r, double θ, double ϕ)
         {
             R = Math.Abs(r);
 
@@ -51,20 +52,20 @@ namespace OpenPlanetoi.CoordinateSystems
 
         public override string ToString()
         {
-            return "Sphere: " + R + "/" + θ + "/" + ϕ;
+            return "Spherical: " + R + "/" + θ + "/" + ϕ;
         }
 
         public override bool Equals(object obj)
         {
-            if (!(obj is SphereCoordinates))
+            if (!(obj is SphereCoordinate))
                 return false;
 
-            var coordObj = (SphereCoordinates)obj;
+            var coordObj = (SphereCoordinate)obj;
 
             return coordObj == this;
         }
 
-        public static implicit operator SphereCoordinates(CartesianCoordinates cartesianCoordinates)
+        public static implicit operator SphereCoordinate(CartesianVector cartesianCoordinates)
         {
             // http://en.wikipedia.org/wiki/Spherical_coordinate_system#Cartesian_coordinates (different xyz because of different directions)
 
@@ -72,15 +73,15 @@ namespace OpenPlanetoi.CoordinateSystems
             var θ = Math.Acos(cartesianCoordinates.Y / r);
             var ϕ = Math.Atan(cartesianCoordinates.X / cartesianCoordinates.Z);
 
-            return new SphereCoordinates(r, θ, ϕ);
+            return new SphereCoordinate(r, θ, ϕ);
         }
 
-        public static bool operator ==(SphereCoordinates left, SphereCoordinates right)
+        public static bool operator ==(SphereCoordinate left, SphereCoordinate right)
         {
             return left.R == right.R && left.θ == right.θ && left.ϕ == right.ϕ;
         }
 
-        public static bool operator !=(SphereCoordinates left, SphereCoordinates right)
+        public static bool operator !=(SphereCoordinate left, SphereCoordinate right)
         {
             return !(left == right);
         }
