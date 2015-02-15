@@ -78,7 +78,7 @@ namespace OpenPlanetoi.CoordinateSystems.Spherical
 
         public static bool operator ==(SphereCoordinate left, SphereCoordinate right)
         {
-            return left.R == right.R && left.θ == right.θ && left.ϕ == right.ϕ;
+            return left.R.IsAlmostEqualTo(right.R) && left.θ.IsAlmostEqualTo(right.θ) && left.ϕ.IsAlmostEqualTo(right.ϕ);
         }
 
         public static bool operator !=(SphereCoordinate left, SphereCoordinate right)

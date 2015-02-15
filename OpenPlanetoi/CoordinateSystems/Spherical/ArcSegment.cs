@@ -33,12 +33,12 @@ namespace OpenPlanetoi.CoordinateSystems.Spherical
         {
             // http://www.boeing-727.com/Data/fly%20odds/distance.html
 
-            if (Start.R != other.Start.R)
+            if (!Start.R.IsAlmostEqualTo(other.Start.R))
                 throw new ArgumentOutOfRangeException(Start.R > other.Start.R ? "this" : "other", "Radius is larger than that of the other Sphere Coordinates.");
 
             intersection = default(SphereCoordinate);
 
-            if (Length == 0 || other.Length == 0)
+            if (Length.IsAlmostEqualTo(0) || other.Length.IsAlmostEqualTo(0))
                 return false;
 
             var planeUnitVector1 = ((CartesianVector)Start * End).AsUnitVector;
@@ -79,7 +79,7 @@ namespace OpenPlanetoi.CoordinateSystems.Spherical
             var startToCoord = CalculateArcLength(Start, sphereCoordinate);
             var endToCoord = CalculateArcLength(End, sphereCoordinate);
 
-            return 0 == Length - startToCoord - endToCoord;
+            return (Length - startToCoord - endToCoord).IsAlmostEqualTo(0);
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace OpenPlanetoi.CoordinateSystems.Spherical
         {
             // http://www.had2know.com/academics/great-circle-distance-sphere-2-points.html
 
-            if (start.R != end.R)
+            if (!start.R.IsAlmostEqualTo(end.R))
                 throw new ArgumentOutOfRangeException(start.R > end.R ? "start" : "end", "Radius is larger than that of the other Sphere Coordinates.");
 
             var cartesianLength = ((CartesianVector)start - end).Length;

@@ -69,9 +69,9 @@ namespace OpenPlanetoi.CoordinateSystems.Cartesian
         public static CartesianVector operator *(CartesianVector left, CartesianVector right)
         {
             return new CartesianVector(
-                x: left.X * right.Y - right.X * left.Y,
-                y: right.Z * left.Y - left.Z * right.Y,
-                z: left.Z * right.X - right.Z * left.Z);
+                x: left.Y * right.Z - right.Y * left.Z,
+                y: right.X * left.Z - left.X * right.Z,
+                z: left.X * right.Y - right.X * left.Y);
         }
 
         public static CartesianVector operator *(CartesianVector left, double right)
@@ -101,7 +101,7 @@ namespace OpenPlanetoi.CoordinateSystems.Cartesian
 
         public static bool operator ==(CartesianVector left, CartesianVector right)
         {
-            return left.X == right.X && left.Y == right.Y && left.Z == right.Z;
+            return left.X.IsAlmostEqualTo(right.X) && left.Y.IsAlmostEqualTo(right.Y) && left.Z.IsAlmostEqualTo(right.Z);
         }
 
         public static bool operator !=(CartesianVector left, CartesianVector right)
