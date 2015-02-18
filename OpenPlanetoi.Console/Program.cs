@@ -28,11 +28,15 @@ namespace OpenPlanetoi.Console
 
             var arc1 = new GreatCircleSegment(start1, end1);
             var arc2 = new GreatCircleSegment(start2, end2);
+
+            Cons.WriteLine();
             Cons.WriteLine(arc1.Midpoint);
             Cons.WriteLine(new CartesianVector(0, 0, 2));
             Cons.WriteLine((SphereCoordinate)arc1.Midpoint);
             Cons.WriteLine((SphereCoordinate)new CartesianVector(0, 0, 2));
             Cons.WriteLine((CartesianVector)(SphereCoordinate)arc1.Midpoint);
+            Cons.WriteLine();
+
             SphereCoordinate intersection;
             Cons.WriteLine(arc1.Intersects(arc2, out intersection) + "   " + intersection + "   " + (CartesianVector)intersection);
 

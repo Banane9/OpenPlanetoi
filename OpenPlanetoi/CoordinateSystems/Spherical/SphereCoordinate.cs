@@ -19,7 +19,7 @@ namespace OpenPlanetoi.CoordinateSystems.Spherical
         /// <summary>
         /// The radius of the Sphere (Euclidian Distance in Carteesian Space).
         /// </summary>
-        public readonly double R;
+        public readonly double Radius;
 
         /// <summary>
         /// The polar angle (rotation away from pointing straight up).
@@ -34,25 +34,17 @@ namespace OpenPlanetoi.CoordinateSystems.Spherical
         /// <param name="ϕ">The azimuthal angle (rotation away from pointing straight to the front). Will be made to fit with any changes to the polar angle and to fit into [0, 2Pi].</param>
         public SphereCoordinate(double r, double θ, double ϕ)
         {
-            R = Math.Abs(r);
-
-            ϕ += ((int)(θ / (2 * Math.PI))) != 0 && ((θ > 0 && ((int)(θ / (2 * Math.PI))) % 2 == 0) || (θ < 0 && ((int)(θ / (2 * Math.PI))) % 2 != 0)) ? Math.PI : 0;
-
-            var twoPiLimit = θ % (2 * Math.PI);
-            θ = Math.Abs(θ % Math.PI == 0 && twoPiLimit != 0 ? Math.PI :
-                (twoPiLimit < -Math.PI ? twoPiLimit + 2 * Math.PI :
-                        (twoPiLimit > Math.PI ? 2 * Math.PI - twoPiLimit : twoPiLimit)) % Math.PI);
-
-            ϕ = ϕ % (2 * Math.PI);
-            ϕ += ϕ < 0 ? Math.PI : 0;
-
+            Radius = Math.Abs(r);
             this.θ = θ;
             this.ϕ = ϕ;
+
+            if (θ < 0 || θ > Math.PI || ϕ < -Math.PI || ϕ > Math.PI)
+                this = (SphereCoordinate)(CartesianVector)this;
         }
 
         public override string ToString()
         {
-            return "Spherical: " + R + "/" + θ + "/" + ϕ;
+            return "Spherical: " + Radius + "/" + θ + "/" + ϕ;
         }
 
         public override bool Equals(object obj)
@@ -78,7 +70,7 @@ namespace OpenPlanetoi.CoordinateSystems.Spherical
 
         public static bool operator ==(SphereCoordinate left, SphereCoordinate right)
         {
-            return left.R.IsAlmostEqualTo(right.R) && left.θ.IsAlmostEqualTo(right.θ) && left.ϕ.IsAlmostEqualTo(right.ϕ);
+            return (CartesianVector)left == (CartesianVector)right;
         }
 
         public static bool operator !=(SphereCoordinate left, SphereCoordinate right)
@@ -88,10 +80,7 @@ namespace OpenPlanetoi.CoordinateSystems.Spherical
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                return R.GetHashCode() * 13 + θ.GetHashCode() * 13 + ϕ.GetHashCode();
-            }
+            return ((CartesianVector)this).GetHashCode();
         }
     }
 }

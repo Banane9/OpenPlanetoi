@@ -19,7 +19,7 @@ namespace OpenPlanetoi.CoordinateSystems.Spherical
                 var θ = Math.Min(Start.θ, End.θ) + (Math.Abs(Start.θ - End.θ) / 2);
                 var ϕ = Math.Min(Start.ϕ, End.ϕ) + (Math.Abs(Start.ϕ - End.ϕ) / 2);
 
-                var midpoint = (CartesianVector)new SphereCoordinate(Start.R, θ, ϕ);
+                var midpoint = (CartesianVector)new SphereCoordinate(Start.Radius, θ, ϕ);
                 if (IsOnArc(midpoint))
                     return midpoint;
 
@@ -71,8 +71,8 @@ namespace OpenPlanetoi.CoordinateSystems.Spherical
         {
             // http://www.boeing-727.com/Data/fly%20odds/distance.html
 
-            if (!Start.R.IsAlmostEqualTo(other.Start.R))
-                throw new ArgumentOutOfRangeException(Start.R > other.Start.R ? "this" : "other", "Radius is larger than that of the other Sphere Coordinates.");
+            if (!Start.Radius.IsAlmostEqualTo(other.Start.Radius))
+                throw new ArgumentOutOfRangeException(Start.Radius > other.Start.Radius ? "this" : "other", "Radius is larger than that of the other Sphere Coordinates.");
 
             intersection = default(SphereCoordinate);
 
@@ -83,7 +83,7 @@ namespace OpenPlanetoi.CoordinateSystems.Spherical
             if (!BaseCircle.Intersects(other.BaseCircle, out possibleIntersection1))
                 return false;
 
-            possibleIntersection1 *= Start.R;
+            possibleIntersection1 *= Start.Radius;
             var possibleIntersection2 = -possibleIntersection1;
 
             if (IsOnArc(possibleIntersection1) && other.IsOnArc(possibleIntersection1))
@@ -127,12 +127,12 @@ namespace OpenPlanetoi.CoordinateSystems.Spherical
         {
             // http://www.had2know.com/academics/great-circle-distance-sphere-2-points.html
 
-            if (!start.R.IsAlmostEqualTo(end.R))
-                throw new ArgumentOutOfRangeException(start.R > end.R ? "start" : "end", "Radius is larger than that of the other Sphere Coordinate.");
+            if (!start.Radius.IsAlmostEqualTo(end.Radius))
+                throw new ArgumentOutOfRangeException(start.Radius > end.Radius ? "start" : "end", "Radius is larger than that of the other Sphere Coordinate.");
 
             var cartesianLength = ((CartesianVector)start - end).Length;
 
-            return 2 * start.R * Math.Asin(cartesianLength / (2 * start.R));
+            return 2 * start.Radius * Math.Asin(cartesianLength / (2 * start.Radius));
         }
     }
 }

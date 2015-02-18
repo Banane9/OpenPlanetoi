@@ -113,9 +113,9 @@ namespace OpenPlanetoi.CoordinateSystems.Cartesian
         {
             // http://en.wikipedia.org/wiki/Spherical_coordinate_system#Cartesian_coordinates (different xyz order because of different directions)
 
-            var x = sphereCoordinates.R * Math.Sin(sphereCoordinates.θ) * Math.Sin(sphereCoordinates.ϕ);
-            var y = sphereCoordinates.R * Math.Cos(sphereCoordinates.θ);
-            var z = sphereCoordinates.R * Math.Sin(sphereCoordinates.θ) * Math.Cos(sphereCoordinates.ϕ);
+            var x = sphereCoordinates.Radius * Math.Sin(sphereCoordinates.θ) * Math.Sin(sphereCoordinates.ϕ);
+            var y = sphereCoordinates.Radius * Math.Cos(sphereCoordinates.θ);
+            var z = sphereCoordinates.Radius * Math.Sin(sphereCoordinates.θ) * Math.Cos(sphereCoordinates.ϕ);
 
             return new CartesianVector(x, y, z);
         }
