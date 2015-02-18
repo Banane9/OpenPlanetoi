@@ -7,29 +7,67 @@ using System.Threading.Tasks;
 
 namespace OpenPlanetoi.CoordinateSystems.Spherical
 {
-    public struct ArcSegment
+    public struct GreatCircleSegment
     {
+        /// <summary>
+        /// Gets the midpoint of the segment.
+        /// </summary>
+        public CartesianVector Midpoint
+        {
+            get
+            {
+                var θ = Math.Min(Start.θ, End.θ) + (Math.Abs(Start.θ - End.θ) / 2);
+                var ϕ = Math.Min(Start.ϕ, End.ϕ) + (Math.Abs(Start.ϕ - End.ϕ) / 2);
+
+                var midpoint = (CartesianVector)new SphereCoordinate(Start.R, θ, ϕ);
+                if (IsOnArc(midpoint))
+                    return midpoint;
+
+                return -midpoint;
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="GreatCircle"/> that this segment is part of.
+        /// </summary>
+        public readonly GreatCircle BaseCircle;
+
+        /// <summary>
+        /// The start coordinate of the segment.
+        /// </summary>
         public readonly SphereCoordinate Start;
 
+        /// <summary>
+        /// The end coordinate of the segment.
+        /// </summary>
         public readonly SphereCoordinate End;
 
+        /// <summary>
+        /// The length of the segment.
+        /// </summary>
         public readonly double Length;
 
-        public ArcSegment(SphereCoordinate start, SphereCoordinate end)
+        /// <summary>
+        /// Creates a new instance of the <see cref="GreatCircleSegment"/> struct with the given points defininf it.
+        /// </summary>
+        /// <param name="start">The start coordinate of the segment.</param>
+        /// <param name="end">The end coordinate of the segment.</param>
+        public GreatCircleSegment(SphereCoordinate start, SphereCoordinate end)
         {
             Start = start;
             End = end;
+            BaseCircle = new GreatCircle(start, end);
             Length = CalculateArcLength(start, end);
         }
 
         /// <summary>
-        /// Checks whether the given <see cref="ArcSegment"/> intersects with this one.
-        /// The point of intersection can then be found the out-Parameter.
+        /// Checks whether the given <see cref="GreatCircleSegment"/> intersects with this one.
+        /// The point of intersection can then be found in the out-Parameter.
         /// </summary>
         /// <param name="other">The arc segment to be checked.</param>
-        /// <param name="intersection">The point of intersection, if any.</param>
-        /// <returns>Whether or not the two <see cref="ArcSegment"/>s intersect.</returns>
-        public bool Intersects(ArcSegment other, out SphereCoordinate intersection)
+        /// <param name="intersection">The point of intersection, if they intersect.</param>
+        /// <returns>Whether the two <see cref="GreatCircleSegment"/>s intersect or not.</returns>
+        public bool Intersects(GreatCircleSegment other, out SphereCoordinate intersection)
         {
             // http://www.boeing-727.com/Data/fly%20odds/distance.html
 
@@ -41,16 +79,12 @@ namespace OpenPlanetoi.CoordinateSystems.Spherical
             if (Length.IsAlmostEqualTo(0) || other.Length.IsAlmostEqualTo(0))
                 return false;
 
-            var planeUnitVector1 = ((CartesianVector)Start * End).AsUnitVector;
-            var planeUnitVector2 = ((CartesianVector)other.Start * other.End).AsUnitVector;
-
-            if (planeUnitVector1 == planeUnitVector2)
+            CartesianVector possibleIntersection1;
+            if (!BaseCircle.Intersects(other.BaseCircle, out possibleIntersection1))
                 return false;
 
-            var unitVectorDirector = (planeUnitVector1 * planeUnitVector2).AsUnitVector;
-
-            var possibleIntersection1 = unitVectorDirector * Start.R;
-            var possibleIntersection2 = -unitVectorDirector * Start.R;
+            possibleIntersection1 *= Start.R;
+            var possibleIntersection2 = -possibleIntersection1;
 
             if (IsOnArc(possibleIntersection1) && other.IsOnArc(possibleIntersection1))
             {
@@ -83,18 +117,18 @@ namespace OpenPlanetoi.CoordinateSystems.Spherical
         }
 
         /// <summary>
-        /// Calculates the length of a Great Circle arc between the two <see cref="SphereCoordinate"/>s.
+        /// Calculates the length of a Great Circle segment between the two <see cref="SphereCoordinate"/>s.
         /// Coordinates must have the same radius.
         /// </summary>
         /// <param name="start">One point of the arc.</param>
         /// <param name="end">Other point of the arc.</param>
-        /// <returns>The length of the Great Circle arc between the two <see cref="SphereCoordinate"/>s.</returns>
+        /// <returns>The length of the Great Circle segment between the two <see cref="SphereCoordinate"/>s.</returns>
         public static double CalculateArcLength(SphereCoordinate start, SphereCoordinate end)
         {
             // http://www.had2know.com/academics/great-circle-distance-sphere-2-points.html
 
             if (!start.R.IsAlmostEqualTo(end.R))
-                throw new ArgumentOutOfRangeException(start.R > end.R ? "start" : "end", "Radius is larger than that of the other Sphere Coordinates.");
+                throw new ArgumentOutOfRangeException(start.R > end.R ? "start" : "end", "Radius is larger than that of the other Sphere Coordinate.");
 
             var cartesianLength = ((CartesianVector)start - end).Length;
 

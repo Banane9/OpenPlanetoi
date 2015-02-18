@@ -44,7 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CoordinateSystems\Spherical\ArcSegment.cs" />
+    <Compile Include="CoordinateSystems\Spherical\GreatCircle.cs" />
+    <Compile Include="CoordinateSystems\Spherical\GreatCircleSegment.cs" />
     <Compile Include="CoordinateSystems\Cartesian\CartesianVector.cs" />
     <Compile Include="CoordinateSystems\Spherical\SphereCoordinate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -71,7 +71,7 @@ namespace OpenPlanetoi.CoordinateSystems.Spherical
 
             var r = Math.Sqrt(Math.Pow(cartesianCoordinates.X, 2) + Math.Pow(cartesianCoordinates.Y, 2) + Math.Pow(cartesianCoordinates.Z, 2));
             var θ = Math.Acos(cartesianCoordinates.Y / r);
-            var ϕ = Math.Atan(cartesianCoordinates.X / cartesianCoordinates.Z);
+            var ϕ = Math.Atan2(cartesianCoordinates.X, cartesianCoordinates.Z);
 
             return new SphereCoordinate(r, θ, ϕ);
         }

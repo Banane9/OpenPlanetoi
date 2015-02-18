@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace OpenPlanetoi.Testing
 {
     [TestClass]
-    public class ArcIntersectionTest
+    public class GreatCircleSegmentIntersectionTest
     {
         [TestMethod]
         public void HandlesArcGoingThrough0Azimuthal()
@@ -20,8 +20,8 @@ namespace OpenPlanetoi.Testing
             var start2 = new SphereCoordinate(2, Math.PI / 4, 0);
             var end2 = new SphereCoordinate(2, 0.75 * Math.PI, 0);
 
-            var arc1 = new ArcSegment(start1, end1);
-            var arc2 = new ArcSegment(start2, end2);
+            var arc1 = new GreatCircleSegment(start1, end1);
+            var arc2 = new GreatCircleSegment(start2, end2);
 
             SphereCoordinate intersection;
             Assert.IsTrue(arc1.Intersects(arc2, out intersection));
