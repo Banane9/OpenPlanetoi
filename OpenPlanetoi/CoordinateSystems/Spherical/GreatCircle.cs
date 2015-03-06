@@ -45,6 +45,16 @@ namespace OpenPlanetoi.CoordinateSystems.Spherical
         }
 
         /// <summary>
+        /// Returns one possible tangent vector of this <see cref="GreatCircle"/> in that point, the other is antipodal to it.
+        /// </summary>
+        /// <param name="point">The point on the <see cref="GreatCircle"/> that the tangent is wanted for.</param>
+        /// <returns>One possible tangent vector.</returns>
+        public CartesianVector GetTangentAt(CartesianVector point)
+        {
+            return (DefinitionVector * point.AsUnitVector).AsUnitVector;
+        }
+
+        /// <summary>
         /// Checks whether the given <see cref="GreatCircle"/> intersects with this one.
         /// One point of intersection can then be found in the out-Parameter, the other is the antipodal point to it.
         /// </summary>
