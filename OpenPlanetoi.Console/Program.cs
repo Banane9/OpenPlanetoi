@@ -40,6 +40,12 @@ namespace OpenPlanetoi.Console
             SphereCoordinate intersection;
             Cons.WriteLine(arc1.Intersects(arc2, out intersection) + "   " + intersection + "   " + (CartesianVector)intersection);
 
+            Cons.WriteLine();
+            var quarterSpherePoly = new Polygon(new SphereCoordinate(1, 0, 0), new SphereCoordinate(1, 0.5 * Math.PI, 0), new SphereCoordinate(1, 0.5 * Math.PI, 0.5 * Math.PI), new SphereCoordinate(1, 0.5 * Math.PI, Math.PI));
+            Cons.WriteLine("Size of quarter sphere Polygon: " + quarterSpherePoly.Area);
+            Cons.WriteLine("Area of whole sphere: " + 4 * Math.PI);
+            Cons.WriteLine("Area of quarter sphere: " + Math.PI);
+
             Cons.ReadLine();
         }
     }

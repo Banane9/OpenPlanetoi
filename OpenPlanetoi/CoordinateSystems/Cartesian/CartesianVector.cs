@@ -61,18 +61,25 @@ namespace OpenPlanetoi.CoordinateSystems.Cartesian
             Z = z;
         }
 
-        #region Operators
-
         /// <summary>
-        /// Calculates the cross product of the two Vectors.
+        /// Calculates the cross product of this vector and the given one.
         /// </summary>
-        public static CartesianVector operator *(CartesianVector left, CartesianVector right)
+        /// <param name="other">The other vector.</param>
+        /// <returns>The cross product of the two vectors.</returns>
+        public CartesianVector CrossProduct(CartesianVector other)
         {
             return new CartesianVector(
-                x: left.Y * right.Z - right.Y * left.Z,
-                y: right.X * left.Z - left.X * right.Z,
-                z: left.X * right.Y - right.X * left.Y);
+                x: (Y * other.Z) - (other.Y * Z),
+                y: (other.X * Z) - (X * other.Z),
+                z: (X * other.Y) - (other.X * Y));
         }
+
+        public double DotProduct(CartesianVector other)
+        {
+            return (X * other.X) + (Y * other.Y) + (Z * other.Z);
+        }
+
+        #region Operators
 
         public static CartesianVector operator *(CartesianVector left, double right)
         {

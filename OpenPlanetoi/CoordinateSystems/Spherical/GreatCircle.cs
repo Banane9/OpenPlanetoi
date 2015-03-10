@@ -23,7 +23,7 @@ namespace OpenPlanetoi.CoordinateSystems.Spherical
         /// <param name="start">The start coordinate of the segment.</param>
         /// <param name="end">The end coordinate of the segment.</param>
         public GreatCircle(CartesianVector start, CartesianVector end)
-            : this((start.AsUnitVector * end.AsUnitVector).AsUnitVector)
+            : this(start.CrossProduct(end).AsUnitVector)
         {
         }
 
@@ -51,7 +51,26 @@ namespace OpenPlanetoi.CoordinateSystems.Spherical
         /// <returns>One possible tangent vector.</returns>
         public CartesianVector GetTangentAt(CartesianVector point)
         {
-            return (DefinitionVector * point.AsUnitVector).AsUnitVector;
+            return DefinitionVector.CrossProduct(point).AsUnitVector;
+        }
+
+        /// <summary>
+        /// Returns the tangent vector that points in the specified direction.
+        /// </summary>
+        /// <param name="point">The point on the <see cref="GreatCircle"/> that the tangent is wanted for.</param>
+        /// <param name="direction">The point specifying in which direction the tangent vector will point.</param>
+        /// <returns>The tangent vector pointing in the right direction.</returns>
+        public CartesianVector GetTangentAt(CartesianVector point, CartesianVector direction)
+        {
+            var possibleTangent = GetTangentAt(point);
+            var otherPossibleTangent = -possibleTangent;
+            var intendedDirection = (direction - point).AsUnitVector;
+
+            // Don't need to divide by the length because the vectors are both unit vectors.
+            var possibleAngle = possibleTangent.DotProduct(intendedDirection);
+            var otherPossibleAngle = otherPossibleTangent.DotProduct(intendedDirection);
+
+            return possibleAngle < otherPossibleAngle ? possibleTangent : otherPossibleTangent;
         }
 
         /// <summary>
@@ -70,7 +89,7 @@ namespace OpenPlanetoi.CoordinateSystems.Spherical
             if (this == other)
                 return false;
 
-            intersection = (DefinitionVector * other.DefinitionVector).AsUnitVector;
+            intersection = DefinitionVector.CrossProduct(other.DefinitionVector).AsUnitVector;
 
             return true;
         }
